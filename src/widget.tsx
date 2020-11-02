@@ -4,6 +4,9 @@ import * as React from 'react';
 
 import { KernelModel } from './model';
 
+import GridExamplesPage from "./grid";
+import NavbarPage from "./navbar";
+
 export class KernelView extends ReactWidget {
   constructor(model: KernelModel) {
     super();
@@ -13,6 +16,8 @@ export class KernelView extends ReactWidget {
   protected render(): React.ReactElement<any> {
     return (
       <React.Fragment>
+        <NavbarPage />
+        <GridExamplesPage />
         <button
           key="header-thread"
           className="jp-example-button"

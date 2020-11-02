@@ -1,3 +1,8 @@
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "bootstrap-css-only/css/bootstrap.min.css";
+import "mdbreact/dist/css/mdb.css";
+
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
@@ -17,14 +22,14 @@ import { ExamplePanel } from './panel';
  * The command IDs used by the console plugin.
  */
 namespace CommandIDs {
-  export const create = 'kernel-messaging:create';
+  export const create = 'one-model:create';
 }
 
 /**
  * Initialization data for the extension.
  */
 const extension: JupyterFrontEndPlugin<void> = {
-  id: 'kernel-messaging',
+  id: 'one-model',
   autoStart: true,
   optional: [ILauncher],
   requires: [ICommandPalette, IMainMenu],
@@ -70,13 +75,13 @@ function activate(
 
   // add menu tab
   const exampleMenu = new Menu({ commands });
-  exampleMenu.title.label = 'Kernel Messaging';
+  exampleMenu.title.label = 'One Model';
   mainMenu.addMenu(exampleMenu);
 
   // add commands to registry
   commands.addCommand(CommandIDs.create, {
-    label: 'Open the Kernel Messaging Panel',
-    caption: 'Open the Kernel Messaging Panel',
+    label: 'Open the One Model Panel',
+    caption: 'Open the One Model Panel',
     execute: createPanel
   });
 

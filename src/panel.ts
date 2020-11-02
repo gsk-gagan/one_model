@@ -26,8 +26,8 @@ export class ExamplePanel extends StackedPanel {
   constructor(manager: ServiceManager.IManager) {
     super();
     this.addClass(PANEL_CLASS);
-    this.id = 'kernel-messaging-panel';
-    this.title.label = 'Kernel Messaging Example View';
+    this.id = 'one-model-panel';
+    this.title.label = 'One Model Example View';
     this.title.closable = true;
 
     this._sessionContext = new SessionContext({
