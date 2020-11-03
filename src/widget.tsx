@@ -23,7 +23,7 @@ export class KernelView extends ReactWidget {
         <NavbarPage />
         <MDBContainer>
           <MDBRow>
-            <MDBCol md="3" className="d-flex align-items-stretch bd-highlight example-parent" style={{ height: '100%' }}>
+            <MDBCol md="3">
               <HelloWorld name="Someone" message="It's working"/>
               <div>
                 This place will have the side panel
