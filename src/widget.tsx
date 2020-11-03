@@ -9,7 +9,6 @@ import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 // import GridExamplesPage from "./grid";
 import NavbarPage from "./navbar";
 import HelloWorld from "./hello";
-// import TabsDefault from "./tabs";
 
 export class KernelView extends ReactWidget {
   constructor(model: KernelModel) {
@@ -21,6 +20,7 @@ export class KernelView extends ReactWidget {
     return (
       <React.Fragment>
         <NavbarPage />
+
         <MDBContainer>
           <MDBRow>
             <MDBCol md="3">

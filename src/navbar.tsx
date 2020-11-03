@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
-MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBFormInline,
-MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem
+MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse,
+MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBBtn
 } from "mdbreact";
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -19,41 +19,35 @@ class NavbarPage extends Component {
       <Router>
         <MDBNavbar color="indigo" dark expand="md">
           <MDBNavbarBrand>
-            <strong className="white-text">Navbar</strong>
+            <strong className="white-text">OneModel</strong>
           </MDBNavbarBrand>
           <MDBNavbarToggler onClick={this.toggleCollapse} />
           <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
             <MDBNavbarNav left>
               <MDBNavItem active>
-                <MDBNavLink to="#!">Home</MDBNavLink>
+                <MDBNavLink to="#!">Setup</MDBNavLink>
               </MDBNavItem>
               <MDBNavItem>
-                <MDBNavLink to="#!">Features</MDBNavLink>
-              </MDBNavItem>
-              <MDBNavItem>
-                <MDBNavLink to="#!">Pricing</MDBNavLink>
+                <MDBNavLink to="#!">Hyperparameters</MDBNavLink>
               </MDBNavItem>
               <MDBNavItem>
                 <MDBDropdown>
                   <MDBDropdownToggle nav caret>
-                    <span className="mr-2">Dropdown</span>
+                    <span className="mr-2">Versioning</span>
                   </MDBDropdownToggle>
                   <MDBDropdownMenu>
-                    <MDBDropdownItem href="#!">Action</MDBDropdownItem>
-                    <MDBDropdownItem href="#!">Another Action</MDBDropdownItem>
-                    <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
-                    <MDBDropdownItem href="#!">Something else here</MDBDropdownItem>
+                    <MDBDropdownItem href="#!">Save</MDBDropdownItem>
+                    <MDBDropdownItem href="#!">Load</MDBDropdownItem>
                   </MDBDropdownMenu>
                 </MDBDropdown>
               </MDBNavItem>
             </MDBNavbarNav>
             <MDBNavbarNav right>
               <MDBNavItem>
-                <MDBFormInline waves>
-                  <div className="md-form my-0">
-                    <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
-                  </div>
-                </MDBFormInline>
+                <MDBBtn gradient="peach">Fit</MDBBtn>
+              </MDBNavItem>
+              <MDBNavItem>
+                <MDBBtn gradient="blue">Transform</MDBBtn>
               </MDBNavItem>
             </MDBNavbarNav>
           </MDBCollapse>
