@@ -39,10 +39,10 @@ export class KernelView extends ReactWidget {
               <MDBRow>
                 <MDBBtn gradient="aqua"
                   onClick={(): void => {
-                    this._model.execute('10+12');
+                    this._model.execute('100+12');
                   }}
                 >
-                  10+12
+                  100+12
                 </MDBBtn>
               </MDBRow>
 

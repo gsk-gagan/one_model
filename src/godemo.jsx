@@ -55,7 +55,7 @@ function initDiagram() {
  * It is here that you would make any updates to your React state, which is dicussed below.
  */
 function handleModelChange(changes) {
-  alert("GoJS model changed!");
+  console.log("GoJS model changed!");
 }
 
 // render function...
