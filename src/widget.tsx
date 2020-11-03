@@ -9,6 +9,8 @@ import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 // import GridExamplesPage from "./grid";
 import NavbarPage from "./navbar";
 import HelloWorld from "./hello";
+import ModalPage from "./modal";
+
 
 export class KernelView extends ReactWidget {
   constructor(model: KernelModel) {
@@ -52,6 +54,19 @@ export class KernelView extends ReactWidget {
             </MDBCol>
 
           </MDBRow>
+
+          <MDBRow>
+            <MDBCol md="4">
+              <ModalPage />
+            </MDBCol>
+            <MDBCol md="4">
+              <ModalPage />
+            </MDBCol>
+            <MDBCol md="4">
+              <ModalPage />
+            </MDBCol>
+          </MDBRow>
+
         </MDBContainer>
       </React.Fragment>
     );
