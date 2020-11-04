@@ -88,6 +88,17 @@ export class App extends React.Component<IAppProps, IAppState> {
                   100+12
                 </MDBBtn>
               </MDBRow>
+
+              <MDBRow>
+                <MDBBtn gradient="purple"
+                  onClick={(): void => {
+                    this.props.model.execute('my_fun()');
+                  }}
+                >
+                  my_fun()
+                </MDBBtn>
+              </MDBRow>              
+
               <MDBRow>
                 <p>Response: </p>
                 <div>
