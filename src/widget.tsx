@@ -13,10 +13,23 @@ import ModalPage from "./modal";
 import GoD from "./godemo";
 
 
+interface IAppState {
+  modal: boolean;
+}
+
+
 export class KernelView extends ReactWidget {
   constructor(model: KernelModel) {
     super();
     this._model = model;
+    this._state = {modal: true};
+    this.toggleModal = this.toggleModal.bind(this);
+  }
+
+  toggleModal(): void {
+    this._state.modal = !this._state.modal;
+    console.log("Parent state change");
+    console.log(this._state);
   }
 
   protected render(): React.ReactElement<any> {
@@ -67,13 +80,7 @@ export class KernelView extends ReactWidget {
 
               <MDBRow>
                 <MDBCol md="12">
-                  <ModalPage />
-                </MDBCol>
-                <MDBCol md="12">
-                  <ModalPage />
-                </MDBCol>
-                <MDBCol md="12">
-                  <ModalPage />
+                  <ModalPage modal={this._state.modal} toggleIt={this.toggleModal} model={this._model}/>
                 </MDBCol>
               </MDBRow>
             </MDBCol>
@@ -91,4 +98,5 @@ export class KernelView extends ReactWidget {
   }
 
   private _model: KernelModel;
+  private _state: IAppState;
 }

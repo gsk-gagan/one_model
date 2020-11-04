@@ -3,21 +3,24 @@ import React, { Component } from 'react';
 import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from "mdbreact";
 
 class ModalPage extends Component {
-  state = {
-    modal: false
+  constructor(props) {
+    super(props);
+    this.toggleIt = this.toggleIt.bind(this);
   }
 
-  toggleIt = () => {
-    this.setState({
-      modal: !this.state.modal
-    });
+  toggleIt() {
+    console.log("Tried to toggle");
+    console.log(this.props);
+    this.props.toggleIt();
+    this.props.model.execute('6+60'); 
+    console.log("Called props toggleIt");
   }
 
   render() {
     return (
       <MDBContainer>
         <MDBBtn color="info" onClick={this.toggleIt}>Right</MDBBtn>
-        <MDBModal isOpen={this.state.modal} toggle={this.toggleIt} fullHeight position="right">
+        <MDBModal isOpen={this.props.modal} toggle={this.toggleIt} fullHeight position="right">
           <MDBModalHeader toggle={this.toggleIt}>MDBModal title</MDBModalHeader>
           <MDBModalBody>
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
