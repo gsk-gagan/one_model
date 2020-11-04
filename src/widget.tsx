@@ -17,22 +17,27 @@ interface IAppState {
   modal: boolean;
 }
 
+interface IAppProps {
+  model: KernelModel;
+}
 
-export class KernelView extends ReactWidget {
-  constructor(model: KernelModel) {
-    super();
-    this._model = model;
-    this._state = {modal: true};
+
+class App extends React.Component<IAppProps, IAppState> {
+  constructor(props: IAppProps) {
+    super(props);
+    this.state = {
+      modal: true
+    };
     this.toggleModal = this.toggleModal.bind(this);
   }
 
   toggleModal(): void {
-    this._state.modal = !this._state.modal;
-    console.log("Parent state change");
-    console.log(this._state);
+    this.setState({
+      modal: !this.state.modal
+    });
   }
 
-  protected render(): React.ReactElement<any> {
+  render(): React.ReactElement<any> {
     return (
       <React.Fragment>
         <NavbarPage />
@@ -52,7 +57,7 @@ export class KernelView extends ReactWidget {
               <MDBRow>
                 <MDBBtn gradient="aqua"
                   onClick={(): void => {
-                    this._model.execute('100+12');
+                    this.props.model.execute('100+12');
                   }}
                 >
                   100+12
@@ -64,23 +69,23 @@ export class KernelView extends ReactWidget {
                 <button
                   className="jp-example-button"
                   onClick={(): void => {
-                    this._model.execute('3+5');
+                    this.props.model.execute('3+5');
                   }}
                 >
                   Compute 3+5
                 </button>
               </MDBRow>
               <MDBRow>
-                <UseSignal signal={this._model.stateChanged}>
+                <UseSignal signal={this.props.model.stateChanged}>
                   {(): JSX.Element => (
-                    <span key="output field">{JSON.stringify(this._model.output)}</span>
+                    <span key="output field">{JSON.stringify(this.props.model.output)}</span>
                   )}
                 </UseSignal>
               </MDBRow>
 
               <MDBRow>
                 <MDBCol md="12">
-                  <ModalPage modal={this._state.modal} toggleIt={this.toggleModal} model={this._model}/>
+                  <ModalPage modal={this.state.modal} toggleIt={this.toggleModal} model={this.props.model}/>
                 </MDBCol>
               </MDBRow>
             </MDBCol>
@@ -97,6 +102,29 @@ export class KernelView extends ReactWidget {
     );
   }
 
+}
+
+
+export class KernelView extends ReactWidget {
+  constructor(model: KernelModel) {
+    super();
+    this._model = model;
+    // this._state = {modal: true};
+    // this.toggleModal = this.toggleModal.bind(this);
+  }
+
+  // toggleModal(): void {
+  //   this._state.modal = !this._state.modal;
+  //   console.log("Parent state change");
+  //   console.log(this._state);
+  // }
+
+  protected render(): React.ReactElement<any> {
+    return (
+      <App model={this._model}/>
+    );
+  }
+
   private _model: KernelModel;
-  private _state: IAppState;
+  // private _state: IAppState;
 }
