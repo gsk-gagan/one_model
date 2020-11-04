@@ -112,9 +112,7 @@ export class App extends React.Component<IAppProps, IAppState> {
             </MDBCol>
 
             <MDBCol md="9">
-              <MDBRow>
-                <GoD />
-              </MDBRow>
+              <GoD />
             </MDBCol>
 
           </MDBRow>
