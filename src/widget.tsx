@@ -6,56 +6,81 @@ import { KernelModel } from './model';
 
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 
-// import GridExamplesPage from "./grid";
 import NavbarPage from "./navbar";
-import HelloWorld from "./hello";
 import ModalPage from "./modal";
 import GoD from "./godemo";
-
-
-interface IAppState {
-  modal: boolean;
-}
 
 interface IAppProps {
   model: KernelModel;
 }
 
+interface IAppState {
+  setupModal: boolean;
+  hyperModal: boolean;
+}
 
 class App extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
-      modal: true
+      setupModal: false,
+      hyperModal: false
     };
-    this.toggleModal = this.toggleModal.bind(this);
+    this.toggleHyperModal = this.toggleHyperModal.bind(this);
+    this.toggleSetupModal = this.toggleSetupModal.bind(this);
+
+    this.onClickFit = this.onClickFit.bind(this);
+    this.onClickTransform = this.onClickTransform.bind(this);
   }
 
-  toggleModal(): void {
+  toggleSetupModal(): void {
     this.setState({
-      modal: !this.state.modal
-    });
+      setupModal: !this.state.setupModal
+    }); 
+  }
+
+  toggleHyperModal(): void {
+    this.setState({
+      hyperModal: !this.state.hyperModal
+    }); 
+  }
+
+  onClickFit(): void {
+    alert("Fit Called");
+  }
+
+  onClickTransform(): void {
+    alert("Transform Called");
   }
 
   render(): React.ReactElement<any> {
     return (
       <React.Fragment>
-        <NavbarPage />
+        <NavbarPage
+          onClickSetup={this.toggleSetupModal}
+          onClickHyper={this.toggleHyperModal}
+          onClickFit={this.onClickFit}
+          onClickTransform={this.onClickTransform}
+        />
+        <ModalPage
+          title="Setup"
+          body="Will contain field where the setup will be specified"
+          modal={this.state.setupModal} 
+          toggle={this.toggleSetupModal}
+        />
+        <ModalPage
+          title="Hyperparameter Tuning"
+          body="Will be done later"
+          modal={this.state.hyperModal} 
+          toggle={this.toggleHyperModal}
+        />
 
         <MDBContainer>
           <MDBRow>
 
             <MDBCol md="3">
               <MDBRow>
-                <HelloWorld name="Someone" message="It's working"/>
-                <div>
-                  This place will have the side panel
-                </div>
-              </MDBRow>
-
-
-              <MDBRow>
-                <MDBBtn gradient="aqua"
+                <MDBBtn gradient="blue"
                   onClick={(): void => {
                     this.props.model.execute('100+12');
                   }}
@@ -63,30 +88,15 @@ class App extends React.Component<IAppProps, IAppState> {
                   100+12
                 </MDBBtn>
               </MDBRow>
-
-
               <MDBRow>
-                <button
-                  className="jp-example-button"
-                  onClick={(): void => {
-                    this.props.model.execute('3+5');
-                  }}
-                >
-                  Compute 3+5
-                </button>
-              </MDBRow>
-              <MDBRow>
-                <UseSignal signal={this.props.model.stateChanged}>
-                  {(): JSX.Element => (
-                    <span key="output field">{JSON.stringify(this.props.model.output)}</span>
-                  )}
-                </UseSignal>
-              </MDBRow>
-
-              <MDBRow>
-                <MDBCol md="12">
-                  <ModalPage modal={this.state.modal} toggleIt={this.toggleModal} model={this.props.model}/>
-                </MDBCol>
+                <p>Response: </p>
+                <div>
+                  <UseSignal signal={this.props.model.stateChanged}>
+                    {(): JSX.Element => (
+                      <span key="output field">{JSON.stringify(this.props.model.output)}</span>
+                    )}
+                  </UseSignal>
+                </div>
               </MDBRow>
             </MDBCol>
 
@@ -109,15 +119,7 @@ export class KernelView extends ReactWidget {
   constructor(model: KernelModel) {
     super();
     this._model = model;
-    // this._state = {modal: true};
-    // this.toggleModal = this.toggleModal.bind(this);
   }
-
-  // toggleModal(): void {
-  //   this._state.modal = !this._state.modal;
-  //   console.log("Parent state change");
-  //   console.log(this._state);
-  // }
 
   protected render(): React.ReactElement<any> {
     return (
@@ -126,5 +128,4 @@ export class KernelView extends ReactWidget {
   }
 
   private _model: KernelModel;
-  // private _state: IAppState;
 }

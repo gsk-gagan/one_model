@@ -5,33 +5,23 @@ import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalF
 class ModalPage extends Component {
   constructor(props) {
     super(props);
-    this.toggleIt = this.toggleIt.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  toggleIt() {
-    console.log("Tried to toggle");
-    console.log(this.props);
-    this.props.toggleIt();
-    this.props.model.execute('6+60'); 
-    console.log("Called props toggleIt");
+  toggle() {
+    this.props.toggle();
   }
 
   render() {
     return (
       <MDBContainer>
-        <MDBBtn color="info" onClick={this.toggleIt}>Right</MDBBtn>
-        <MDBModal isOpen={this.props.modal} toggle={this.toggleIt} fullHeight position="right">
-          <MDBModalHeader toggle={this.toggleIt}>MDBModal title</MDBModalHeader>
+        <MDBModal isOpen={this.props.modal} toggle={this.toggle} fullHeight position="right" backdrop={false}>
+          <MDBModalHeader toggle={this.toggle}>{this.props.title}</MDBModalHeader>
           <MDBModalBody>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-            magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
+            {this.props.body}
           </MDBModalBody>
           <MDBModalFooter>
-            <MDBBtn color="secondary" onClick={this.toggleIt}>Close</MDBBtn>
+            <MDBBtn color="secondary" onClick={this.toggle}>Close</MDBBtn>
             <MDBBtn color="primary">Save changes</MDBBtn>
           </MDBModalFooter>
         </MDBModal>
