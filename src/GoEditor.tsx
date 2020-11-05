@@ -1,5 +1,3 @@
-import { UseSignal } from '@jupyterlab/apputils';
-
 import * as go from 'gojs';
 import { produce } from 'immer';
 import * as React from 'react';
@@ -80,6 +78,8 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   signalChangeCallback(emitter: any): void {
+    console.log(this.props.model.output)
+    console.log(JSON.stringify(this.props.model.output))
     this.setState({
       log: JSON.stringify(this.props.model.output)
     });
@@ -103,7 +103,6 @@ class App extends React.Component<IAppProps, IAppState> {
     const command = this.state.adapterClass + '.pipeline_from_graph(' + graph + ')';
     // Below has special try catch blocks to provide with proper response
     const executeCommand = this.state.adapterClass + '.execute(' + command + ')';
-    console.log(executeCommand);
     this.props.model.execute(executeCommand);
   }
 
@@ -359,16 +358,6 @@ class App extends React.Component<IAppProps, IAppState> {
                   my_fun()
                 </MDBBtn>
               </MDBRow>              
-              <MDBRow>
-                <p>Response: </p>
-                <div>
-                  <UseSignal signal={this.props.model.stateChanged}>
-                    {(): JSX.Element => (
-                      <span key="output field">{JSON.stringify(this.props.model.output)}</span>
-                    )}
-                  </UseSignal>
-                </div>
-              </MDBRow>
 
               <MDBRow>
                 <div
