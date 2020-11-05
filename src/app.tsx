@@ -8,7 +8,8 @@ import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 
 import NavbarPage from "./navbar";
 import ModalPage from "./modal";
-import GoD from "./godemo";
+// import GoD from "./godemo";
+import GoEditor from "./GoEditor";
 
 export interface IAppProps {
   model: KernelModel;
@@ -111,8 +112,8 @@ export class App extends React.Component<IAppProps, IAppState> {
               </MDBRow>
             </MDBCol>
 
-            <MDBCol md="9">
-              <GoD />
+            <MDBCol md="9" className="scrollbar scrollbar-primary">
+              <GoEditor />
             </MDBCol>
 
           </MDBRow>
