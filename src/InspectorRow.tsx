@@ -3,6 +3,8 @@
 */
 
 import * as React from 'react';
+import { MDBInput } from "mdbreact";
+
 
 interface InspectorRowProps {
   id: string;
@@ -40,44 +42,56 @@ export class InspectorRow extends React.PureComponent<InspectorRowProps, {}> {
 
   public render() {
     let val = this.props.value;
-    let inp_text;
-    let inp_type;
+    let inp_ele;
     if (this.props.id === 'r') {
-      inp_text = 'Data node';
       const checked = parseInt(val) != 0;
-      inp_type = <input
-              type='checkbox'
-              id='relink'
-              checked={checked}
-              onChange={this.handleNodeTypeChange}
-              onBlur={this.handleNodeTypeChange} />;      
+      inp_ele = (
+        <div className="custom-control custom-checkbox">
+          <input
+                className='custom-control-input'
+                type='checkbox'
+                id='data_node_input_checkbox'
+                checked={checked}
+                onChange={this.handleNodeTypeChange}
+                onBlur={this.handleNodeTypeChange} />
+          <label 
+            className="custom-control-label" 
+            htmlFor="data_node_input_checkbox">Data node</label>
+        </div>
+      );
     } else if (this.props.id === 'input_df') {
-      inp_text = 'Input data';
+      const inp_text = 'Input data';
       const checked = parseInt(val) != 0;
-      inp_type = <input
+      inp_ele = (
+        <div className="custom-control custom-checkbox">
+          <input
+              className='custom-control-input'
               type='checkbox'
-              id='relink'
+              id='input_node_input_checkbox'
               checked={checked}
               onChange={this.handelInputDataChange}
-              onBlur={this.handelInputDataChange} />;            
+              onBlur={this.handelInputDataChange} />
+          <label 
+            className="custom-control-label" 
+            htmlFor="input_node_input_checkbox">{inp_text}</label>
+        </div>
+      );
     } else {
-      inp_text = this.props.id;
-      inp_type = <input
-              disabled={this.props.id === 'key'}
-              value={val}
-              onChange={this.handleInputChange}
-              onBlur={this.handleInputChange} />;
+      let inp_text = this.props.id;
+      if (this.props.id === 'text'){
+        inp_text = 'Name';
+      }
+      inp_ele = (
+        <MDBInput
+          label={inp_text}
+          size='sm'
+          disabled={this.props.id === 'key'}
+          value={val}
+          onChange={this.handleInputChange}
+          onBlur={this.handleInputChange} />
+      );
     }
 
-    if (this.props.id === 'text'){
-      inp_text = 'Name';
-    }
-
-    return (
-      <tr>
-        <td>{inp_text}</td>
-        <td>{inp_type}</td>
-      </tr>
-    );
+    return inp_ele;
   }
 }

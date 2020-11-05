@@ -42,12 +42,8 @@ export class SelectionInspector extends React.PureComponent<SelectionInspectorPr
 
   public render() {
     return (
-      <div id='myInspectorDiv' className='inspector'>
-        <table>
-          <tbody>
-            {this.renderObjectDetails()}
-          </tbody>
-        </table>
+      <div id='myInspectorDiv' className='form-group card div-wide-pm'>
+        {this.renderObjectDetails()}
       </div>
     );
   }
