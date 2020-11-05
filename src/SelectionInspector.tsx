@@ -17,21 +17,27 @@ export class SelectionInspector extends React.PureComponent<SelectionInspectorPr
    */
   private renderObjectDetails() {
     const selObj = this.props.selectedData;
+    const rejectKeys = ['key', 'loc', 'color'];
     const dets = [];
+    const startDets = [];
     for (const k in selObj) {
+      if (rejectKeys.includes(k)) {
+        continue;
+      }
       const val = selObj[k];
       const row = <InspectorRow
                     key={k}
                     id={k}
                     value={val}
                     onInputChange={this.props.onInputChange} />;
-      if (k === 'key') {
-        dets.unshift(row); // key always at start
+      if (k === 'text' || k === 'r' || k === 'input_df') {
+          startDets.push(row);
       } else {
         dets.push(row);
       }
     }
-    return dets;
+    const res = startDets.concat(dets);
+    return res;
   }
 
   public render() {

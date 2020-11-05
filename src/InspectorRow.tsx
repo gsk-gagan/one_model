@@ -15,6 +15,7 @@ export class InspectorRow extends React.PureComponent<InspectorRowProps, {}> {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleNodeTypeChange = this.handleNodeTypeChange.bind(this);
+    this.handelInputDataChange = this.handelInputDataChange.bind(this);
   }
 
   private handleInputChange(e: any) {
@@ -23,58 +24,60 @@ export class InspectorRow extends React.PureComponent<InspectorRowProps, {}> {
 
   private handleNodeTypeChange(e: any) {
     if (e.target.checked) {
-      this.props.onInputChange('r', '20', true);
+      this.props.onInputChange(this.props.id, '20', true);
     } else {
-      this.props.onInputChange('r', '0', true);
+      this.props.onInputChange(this.props.id, '0', true);
     }
   }
 
-  private formatLocation(loc: string): string {
-    const locArr = loc.split(' ');
-    if (locArr.length === 2) {
-      const x = parseFloat(locArr[0]);
-      const y = parseFloat(locArr[1]);
-      if (!isNaN(x) && !isNaN(y)) {
-        return `${x.toFixed(0)} ${y.toFixed(0)}`;
-      }
+  private handelInputDataChange(e: any) {
+    if (e.target.checked) {
+      this.props.onInputChange(this.props.id, '1', true);
+    } else {
+      this.props.onInputChange(this.props.id, '0', true);
     }
-    return loc;
   }
 
   public render() {
     let val = this.props.value;
-    if (this.props.id === 'loc') {
-      val = this.formatLocation(this.props.value);
-    }
+    let inp_text;
+    let inp_type;
     if (this.props.id === 'r') {
-      let checked = parseInt(val) != 0;
-      return (
-        <tr>
-          <td>Data Node?</td>
-          <td>
-            <input
+      inp_text = 'Data node';
+      const checked = parseInt(val) != 0;
+      inp_type = <input
               type='checkbox'
               id='relink'
               checked={checked}
               onChange={this.handleNodeTypeChange}
-              onBlur={this.handleNodeTypeChange} />
-          </td>
-        </tr>
-      );
+              onBlur={this.handleNodeTypeChange} />;      
+    } else if (this.props.id === 'input_df') {
+      inp_text = 'Input data';
+      const checked = parseInt(val) != 0;
+      inp_type = <input
+              type='checkbox'
+              id='relink'
+              checked={checked}
+              onChange={this.handelInputDataChange}
+              onBlur={this.handelInputDataChange} />;            
     } else {
-      return (
-        <tr>
-          <td>{this.props.id}</td>
-          <td>
-            <input
+      inp_text = this.props.id;
+      inp_type = <input
               disabled={this.props.id === 'key'}
               value={val}
               onChange={this.handleInputChange}
-              onBlur={this.handleInputChange}>
-            </input>
-          </td>
-        </tr>
-      );
+              onBlur={this.handleInputChange} />;
     }
+
+    if (this.props.id === 'text'){
+      inp_text = 'Name';
+    }
+
+    return (
+      <tr>
+        <td>{inp_text}</td>
+        <td>{inp_type}</td>
+      </tr>
+    );
   }
 }

@@ -8,15 +8,6 @@ import * as React from 'react';
 
 import { GuidedDraggingTool } from './GuidedDraggingTool';
 
-interface DiagramProps {
-  nodeDataArray: Array<go.ObjectData>;
-  linkDataArray: Array<go.ObjectData>;
-  modelData: go.ObjectData;
-  skipsDiagramUpdate: boolean;
-  onDiagramEvent: (e: go.DiagramEvent) => void;
-  onModelChange: (e: go.IncrementalData) => void;
-}
-
 go.Shape.defineFigureGenerator("CustomRoundedRectangle", function(shape, w, h) {
   // this figure takes one parameter, the size of the corner
   var p1 = 0;  // default corner size
@@ -41,6 +32,16 @@ go.Shape.defineFigureGenerator("CustomRoundedRectangle", function(shape, w, h) {
   geo.spot2 = new go.Spot(1, 1, -0.3 * p1, 0);
   return geo;
 });
+
+
+interface DiagramProps {
+  nodeDataArray: Array<go.ObjectData>;
+  linkDataArray: Array<go.ObjectData>;
+  modelData: go.ObjectData;
+  skipsDiagramUpdate: boolean;
+  onDiagramEvent: (e: go.DiagramEvent) => void;
+  onModelChange: (e: go.IncrementalData) => void;
+}
 
 export class DiagramWrapper extends React.Component<DiagramProps, {}> {
   /**
@@ -91,7 +92,7 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
         {
           'undoManager.isEnabled': true,  // must be set to allow for model change listening
           // 'undoManager.maxHistoryLength': 0,  // uncomment disable undo/redo functionality
-          'clickCreatingTool.archetypeNodeData': { text: 'new node', color: 'white', r: '0' },
+          'clickCreatingTool.archetypeNodeData': { text: 'new node', color: 'white', r: '0', input_df: '0' },
           draggingTool: new GuidedDraggingTool(),  // defined in GuidedDraggingTool.ts
           'draggingTool.horizontalGuidelineColor': 'blue',
           'draggingTool.verticalGuidelineColor': 'blue',

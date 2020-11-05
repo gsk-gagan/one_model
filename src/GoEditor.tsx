@@ -1,21 +1,24 @@
-/*
-*  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
-*/
+import { UseSignal } from '@jupyterlab/apputils';
 
 import * as go from 'gojs';
 import { produce } from 'immer';
 import * as React from 'react';
+import { MDBContainer, MDBRow, MDBCol, MDBBtn } from "mdbreact";
 
+import { KernelModel } from './model';
 import { DiagramWrapper } from './DiagramWrapper';
 import { SelectionInspector } from './SelectionInspector';
+import NavbarPage from "./navbar";
+import ModalPage from "./modal";
 
 
-/**
- * Use a linkDataArray since we'll be using a GraphLinksModel,
- * and modelData for demonstration purposes. Note, though, that
- * both are optional props in ReactDiagram.
- */
-interface AppState {
+interface IAppProps {
+  model: KernelModel;
+}
+
+interface IAppState {
+  setupModal: boolean;
+  hyperModal: boolean;
   nodeDataArray: Array<go.ObjectData>;
   linkDataArray: Array<go.ObjectData>;
   modelData: go.ObjectData;
@@ -23,19 +26,21 @@ interface AppState {
   skipsDiagramUpdate: boolean;
 }
 
-class GoEditor extends React.Component<{}, AppState> {
+class App extends React.Component<IAppProps, IAppState> {
   // Maps to store key -> arr index for quick lookups
   private mapNodeKeyIdx: Map<go.Key, number>;
   private mapLinkKeyIdx: Map<go.Key, number>;
 
-  constructor(props: object) {
+  constructor(props: IAppProps) {
     super(props);
     this.state = {
+      setupModal: false,
+      hyperModal: false,
       nodeDataArray: [
-        { key: 0, text: 'Alpha', color: 'white', loc: '0 0', param: 'GSK', r: 20 },
-        { key: 1, text: 'Beta', color: 'white', loc: '150 0', some_param: 'GSK', r: 0 },
-        { key: 2, text: 'Gamma', color: 'white', loc: '0 150', r: 0 },
-        { key: 3, text: 'Delta', color: 'white', loc: '150 150', p1: 'GSK', p2: '[1, 2, 3]', r: 0 }
+        { key: 0, text: 'Alpha', color: 'white', loc: '0 0', param: 'GSK', r: 20, input_df: 1 },
+        { key: 1, text: 'Beta', color: 'white', loc: '150 0', p0: 'GSK', r: 0, input_df: 0 },
+        { key: 2, text: 'Gamma', color: 'white', loc: '0 150', r: 0, input_df: 0 },
+        { key: 3, text: 'Delta', color: 'white', loc: '150 150', p1: 'GSK', p2: '[1, 2, 3]', r: 0, input_df: 0 }
       ],
       linkDataArray: [
         { key: -1, from: 0, to: 1 },
@@ -48,6 +53,13 @@ class GoEditor extends React.Component<{}, AppState> {
       selectedData: null,
       skipsDiagramUpdate: false
     };
+
+    // General UI functions
+    this.toggleHyperModal = this.toggleHyperModal.bind(this);
+    this.toggleSetupModal = this.toggleSetupModal.bind(this);
+    this.onClickFit = this.onClickFit.bind(this);
+    this.onClickTransform = this.onClickTransform.bind(this);
+
     // init maps
     this.mapNodeKeyIdx = new Map<go.Key, number>();
     this.mapLinkKeyIdx = new Map<go.Key, number>();
@@ -58,6 +70,26 @@ class GoEditor extends React.Component<{}, AppState> {
     this.handleModelChange = this.handleModelChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleRelinkChange = this.handleRelinkChange.bind(this);
+  }
+
+  toggleSetupModal(): void {
+    this.setState({
+      setupModal: !this.state.setupModal
+    }); 
+  }
+
+  toggleHyperModal(): void {
+    this.setState({
+      hyperModal: !this.state.hyperModal
+    }); 
+  }
+
+  onClickFit(): void {
+    alert("Fit Called");
+  }
+
+  onClickTransform(): void {
+    alert("Transform Called");
   }
 
   /**
@@ -91,7 +123,7 @@ class GoEditor extends React.Component<{}, AppState> {
       case 'ChangedSelection': {
         const sel = e.subject.first();
         this.setState(
-          produce((draft: AppState) => {
+          produce((draft: IAppState) => {
             if (sel) {
               if (sel instanceof go.Node) {
                 const idx = this.mapNodeKeyIdx.get(sel.key);
@@ -99,13 +131,15 @@ class GoEditor extends React.Component<{}, AppState> {
                   const nd = draft.nodeDataArray[idx];
                   draft.selectedData = nd;
                 }
-              } else if (sel instanceof go.Link) {
-                const idx = this.mapLinkKeyIdx.get(sel.key);
-                if (idx !== undefined && idx >= 0) {
-                  const ld = draft.linkDataArray[idx];
-                  draft.selectedData = ld;
-                }
-              }
+              } 
+              // Uncomment to show info for links
+              // else if (sel instanceof go.Link) {
+              //   const idx = this.mapLinkKeyIdx.get(sel.key);
+              //   if (idx !== undefined && idx >= 0) {
+              //     const ld = draft.linkDataArray[idx];
+              //     draft.selectedData = ld;
+              //   }
+              // }
             } else {
               draft.selectedData = null;
             }
@@ -135,7 +169,7 @@ class GoEditor extends React.Component<{}, AppState> {
     const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
     const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
     this.setState(
-      produce((draft: AppState) => {
+      produce((draft: IAppState) => {
         let narr = draft.nodeDataArray;
         if (modifiedNodeData) {
           modifiedNodeData.forEach((nd: go.ObjectData) => {
@@ -220,7 +254,7 @@ class GoEditor extends React.Component<{}, AppState> {
    */
   public handleInputChange(path: string, value: string, isBlur: boolean) {
     this.setState(
-      produce((draft: AppState) => {
+      produce((draft: IAppState) => {
         const data = draft.selectedData as go.ObjectData;  // only reached if selectedData isn't null
         data[path] = value;
         if (isBlur) {
@@ -264,27 +298,85 @@ class GoEditor extends React.Component<{}, AppState> {
     }
 
     return (
-      <div>
-        <DiagramWrapper
-          nodeDataArray={this.state.nodeDataArray}
-          linkDataArray={this.state.linkDataArray}
-          modelData={this.state.modelData}
-          skipsDiagramUpdate={this.state.skipsDiagramUpdate}
-          onDiagramEvent={this.handleDiagramEvent}
-          onModelChange={this.handleModelChange}
+      <React.Fragment>
+        <NavbarPage
+          onClickSetup={this.toggleSetupModal}
+          onClickHyper={this.toggleHyperModal}
+          onClickFit={this.onClickFit}
+          onClickTransform={this.onClickTransform}
         />
-        <label>
-          Allow Relinking?
-          <input
-            type='checkbox'
-            id='relink'
-            checked={this.state.modelData.canRelink}
-            onChange={this.handleRelinkChange} />
-        </label>
-        {inspector}
-      </div>
+        <ModalPage
+          title="Setup"
+          body="Will contain field where the setup will be specified"
+          modal={this.state.setupModal} 
+          toggle={this.toggleSetupModal}
+        />
+        <ModalPage
+          title="Hyperparameter Tuning"
+          body="Will be done later"
+          modal={this.state.hyperModal} 
+          toggle={this.toggleHyperModal}
+        />
+
+        <MDBContainer>
+          <MDBRow>
+
+            <MDBCol md="3">
+              <MDBRow>
+                <MDBBtn gradient="blue"
+                  onClick={(): void => {
+                    this.props.model.execute('100+12');
+                  }}
+                >
+                  100+12
+                </MDBBtn>
+              </MDBRow>
+
+              <MDBRow>
+                <MDBBtn gradient="purple"
+                  onClick={(): void => {
+                    this.props.model.execute('my_fun()');
+                  }}
+                >
+                  my_fun()
+                </MDBBtn>
+              </MDBRow>              
+
+              <MDBRow>
+                <p>Response: </p>
+                <div>
+                  <UseSignal signal={this.props.model.stateChanged}>
+                    {(): JSX.Element => (
+                      <span key="output field">{JSON.stringify(this.props.model.output)}</span>
+                    )}
+                  </UseSignal>
+                </div>
+              </MDBRow>
+
+              <MDBRow>
+                {inspector}
+              </MDBRow>
+
+            </MDBCol>
+
+            <MDBCol md="9" className="scrollbar scrollbar-primary">
+              <div className="card">
+                <DiagramWrapper
+                  nodeDataArray={this.state.nodeDataArray}
+                  linkDataArray={this.state.linkDataArray}
+                  modelData={this.state.modelData}
+                  skipsDiagramUpdate={this.state.skipsDiagramUpdate}
+                  onDiagramEvent={this.handleDiagramEvent}
+                  onModelChange={this.handleModelChange}
+                />
+              </div>
+            </MDBCol>
+
+          </MDBRow>
+        </MDBContainer>
+      </React.Fragment>
     );
   }
 }
 
-export default GoEditor;
+export default App;
