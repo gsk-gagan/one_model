@@ -17,6 +17,8 @@ interface IAppProps {
 }
 
 interface IAppState {
+  adapterClass: string;
+  log: string;
   setupModal: boolean;
   hyperModal: boolean;
   nodeDataArray: Array<go.ObjectData>;
@@ -34,13 +36,15 @@ class App extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
+      adapterClass: 'OneModelGoAikit',
+      log: '',
       setupModal: false,
       hyperModal: false,
       nodeDataArray: [
-        { key: 0, text: 'Alpha', color: 'white', loc: '0 0', param: 'GSK', r: 20, input_df: 1 },
-        { key: 1, text: 'Beta', color: 'white', loc: '150 0', p0: 'GSK', r: 0, input_df: 0 },
-        { key: 2, text: 'Gamma', color: 'white', loc: '0 150', r: 0, input_df: 0 },
-        { key: 3, text: 'Delta', color: 'white', loc: '150 150', p1: 'GSK', p2: '[1, 2, 3]', r: 0, input_df: 0 }
+        { key: 0, text: 'Alpha', color: 'white', loc: '0 0', Parameters: '', r: 20, input_df: 1 },
+        { key: 1, text: 'Beta', color: 'white', loc: '150 0', Parameters: '', r: 0, input_df: 0 },
+        { key: 2, text: 'Gamma', color: 'white', loc: '0 150', Parameters: '', r: 0, input_df: 0 },
+        { key: 3, text: 'Delta', color: 'white', loc: '150 150', Parameters: '[1, 2, 3]', r: 0, input_df: 0 }
       ],
       linkDataArray: [
         { key: -1, from: 0, to: 1 },
@@ -54,6 +58,9 @@ class App extends React.Component<IAppProps, IAppState> {
       skipsDiagramUpdate: false
     };
 
+    // Subscribing to a signal
+    this.signalChangeCallback = this.signalChangeCallback.bind(this);
+    this.props.model.stateChanged.connect(this.signalChangeCallback, this);
     // General UI functions
     this.toggleHyperModal = this.toggleHyperModal.bind(this);
     this.toggleSetupModal = this.toggleSetupModal.bind(this);
@@ -72,6 +79,12 @@ class App extends React.Component<IAppProps, IAppState> {
     this.handleRelinkChange = this.handleRelinkChange.bind(this);
   }
 
+  signalChangeCallback(emitter: any): void {
+    this.setState({
+      log: JSON.stringify(this.props.model.output)
+    });
+  }
+
   toggleSetupModal(): void {
     this.setState({
       setupModal: !this.state.setupModal
@@ -85,7 +98,13 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   onClickFit(): void {
-    alert("Fit Called");
+    const graph = JSON.stringify({nodes: this.state.nodeDataArray, 
+                                  links: this.state.linkDataArray});
+    const command = this.state.adapterClass + '.pipeline_from_graph(' + graph + ')';
+    // Below has special try catch blocks to provide with proper response
+    const executeCommand = this.state.adapterClass + '.execute(' + command + ')';
+    console.log(executeCommand);
+    this.props.model.execute(executeCommand);
   }
 
   onClickTransform(): void {
@@ -321,7 +340,7 @@ class App extends React.Component<IAppProps, IAppState> {
         <MDBContainer>
           <MDBRow>
 
-            <MDBCol md="3">
+            <MDBCol md="3" style={{paddingLeft: '30px'}}>
               <MDBRow>
                 <MDBBtn gradient="blue"
                   onClick={(): void => {
@@ -331,7 +350,6 @@ class App extends React.Component<IAppProps, IAppState> {
                   100+12
                 </MDBBtn>
               </MDBRow>
-
               <MDBRow>
                 <MDBBtn gradient="purple"
                   onClick={(): void => {
@@ -341,7 +359,6 @@ class App extends React.Component<IAppProps, IAppState> {
                   my_fun()
                 </MDBBtn>
               </MDBRow>              
-
               <MDBRow>
                 <p>Response: </p>
                 <div>
@@ -350,6 +367,15 @@ class App extends React.Component<IAppProps, IAppState> {
                       <span key="output field">{JSON.stringify(this.props.model.output)}</span>
                     )}
                   </UseSignal>
+                </div>
+              </MDBRow>
+
+              <MDBRow>
+                <div
+                  className="scrollbar scrollbar-primary card div-wide-pm"
+                  style={{height: '30vh', overflow: 'auto'}}>
+                  <p>Message: </p>
+                  {this.state.log}
                 </div>
               </MDBRow>
 
